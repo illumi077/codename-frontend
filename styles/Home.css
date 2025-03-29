@@ -1,42 +1,104 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+/* General Reset */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Press Start 2P', cursive;
+  background-color: #79b168; /* Lush green base */
+  background-image: 
+    radial-gradient(circle, #6f9d44 12%, transparent 2%), 
+    radial-gradient(circle, #a67c52 12%, transparent 2%), 
+    radial-gradient(circle, #c2aa70 12%, transparent 2%);
+  background-size: 20px 20px, 25px 25px, 30px 30px;
+  background-position: 0 0, 10px 10px, -5px -5px;
+  color: white;
+  text-align: center;
+}
+
+h1, h2, p {
+  text-shadow: 1px 1px #000; /* Subtle shadow for depth */
+  margin-bottom: 20px;
+}
+
 .home-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly; /* Space items evenly */
+  height: 100vh; /* Full viewport height */
+  padding: 0 1rem; /* Responsive padding */
+}
+
+.retro-buttons{
     display: flex;
-    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    height: 100vh;
-    background: linear-gradient(to bottom, #141e30, #243b55); /* Gradient background */
-    color: #ffffff;
-  }
-  
-  .retro-title {
-    font-family: 'Press Start 2P', sans-serif; /* Retro-style font */
-    font-size: 2.5rem;
-    text-shadow: 2px 2px #ff0099;
-    margin-bottom: 20px;
-  }
-  
-  .retro-buttons {
-    display: flex;
-    gap: 20px;
-  }
-  
-  .retro-button {
-    font-family: 'Press Start 2P', sans-serif;
-    text-decoration: none;
-    padding: 10px 20px;
-    background-color: #ff0099;
-    color: white;
-    border-radius: 5px;
-    box-shadow: 0 5px #c60072;
-    transition: all 0.3s ease;
-  }
-  
-  .retro-button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px #c60072;
-  }
-  
-  .retro-button:active {
-    transform: translateY(2px);
-    box-shadow: 0 3px #c60072;
+    justify-content: space-evenly;
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    margin-top: 1rem; /* Space between buttons and text */
+    margin-bottom: 1rem; /* Space between buttons and text */
+    padding: 0 1rem; /* Responsive padding */
+    gap: 1rem; /* Space between buttons */
+    max-width: 800px; /* Limit width for larger screens */
+    margin: 0 auto; /* Center the buttons */
+    
+
+}
+
+
+.retro-button {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 1rem;
+  padding: 0.9375rem 1.875rem; /* Consistent padding */
+  margin-top: 0.625rem;
+  border: 0.1875rem solid black;
+  background-color: #f9d342; /* Softer retro golden yellow */
+  color: black;
+  cursor: pointer;
+  text-shadow: 0.125rem 0.125rem #ffffff; /* Subtle text shadow */
+  box-shadow: 0.25rem 0.5rem black; /* Elevated appearance */
+  border-radius: 0.3125rem; /* Smooth rounded corners */
+  transition: transform 0.2s, background-color 0.2s, box-shadow 0.2s ease;
+}
+
+.retro-button:hover {
+  background-color: #d1345b; /* Retro red-pink for hover */
+  color: white;
+  text-shadow: none;
+  transform: scale(1.05); /* Slightly larger on hover */
+}
+
+.retro-button:active {
+  transform: translateY(0.125rem); /* Tactile press feedback */
+  box-shadow: 0 0.125rem black; /* Reduced shadow for pressed look */
+  background-color: #f9d342; /* Retain golden yellow */
+}
+
+.retro-button:focus {
+  outline: none; /* Remove default focus outline */
+  box-shadow: 0 0 0.5rem #f9d342; /* Add a glow effect */
+}
+.retro-button:disabled {
+  background-color: #ccc; /* Greyed out button */
+  color: #666; /* Dimmed text color */
+  cursor: not-allowed; /* Not-allowed cursor */
+  box-shadow: none; /* Remove shadow */
+  transform: none; /* No transform on disabled state */
+}
+.retro-button:disabled:hover {
+  background-color: #ccc; /* Keep the same color on hover */
+  transform: none; /* No transform on hover */
+}
+.retro-button:disabled:active {
+  transform: none; /* No transform on active state */
+  box-shadow: none; /* Remove shadow */
+}
+
+
+.message {
+    margin-top: 1.3rem;
+    font-size: 1rem;
+    color: yellow;
+    text-align: center;
+    text-shadow: 0.125rem 0.125rem #000; /* Subtle shadow for depth */
   }
