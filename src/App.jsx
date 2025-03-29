@@ -1,29 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Home from '../components/Home';
+import CreateRoom from '../components/CreateRoom';
+import JoinRoom from '../components/JoinRoom';
 
-const App = () => {
-  const [healthMessage, setHealthMessage] = useState('');
-
-  useEffect(() => {
-    const fetchHealth = async () => {
-      try {
-        const response = await fetch('https://codename-backend.onrender.com/health');
-        const text = await response.text();
-        setHealthMessage(text);
-      } catch (error) {
-        console.error('Error fetching /health route:', error);
-        setHealthMessage('Unable to connect to the backend!');
-      }
-    };
-
-    fetchHealth();
-  }, []);
-
+function App() {
   return (
-    <div>
-      <h1>Codenames App</h1>
-      <p>Backend Health: {healthMessage}</p>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/create-room" element={<CreateRoom />} />
+        <Route path="/join-room" element={<JoinRoom />} />
+      </Routes>
+    </Router>
   );
-};
+}
 
 export default App;
