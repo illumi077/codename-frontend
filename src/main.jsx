@@ -1,11 +1,19 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client'; // Update to use 'react-dom/client'
-import App from './App';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Home from '../components/Home';
+import CreateRoom from '../components/CreateRoom';
+import JoinRoom from '../components/JoinRoom';
 
-// Use ReactDOM.createRoot for React 18+
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/create-room" element={<CreateRoom />} />
+        <Route path="/join-room" element={<JoinRoom />} />
+      </Routes>
+    </Router>
+  );
+}
+
+export default App;

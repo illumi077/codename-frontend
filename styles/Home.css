@@ -1,0 +1,42 @@
+.home-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: linear-gradient(to bottom, #141e30, #243b55); /* Gradient background */
+    color: #ffffff;
+  }
+  
+  .retro-title {
+    font-family: 'Press Start 2P', sans-serif; /* Retro-style font */
+    font-size: 2.5rem;
+    text-shadow: 2px 2px #ff0099;
+    margin-bottom: 20px;
+  }
+  
+  .retro-buttons {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .retro-button {
+    font-family: 'Press Start 2P', sans-serif;
+    text-decoration: none;
+    padding: 10px 20px;
+    background-color: #ff0099;
+    color: white;
+    border-radius: 5px;
+    box-shadow: 0 5px #c60072;
+    transition: all 0.3s ease;
+  }
+  
+  .retro-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px #c60072;
+  }
+  
+  .retro-button:active {
+    transform: translateY(2px);
+    box-shadow: 0 3px #c60072;
+  }

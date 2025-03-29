@@ -1,0 +1,64 @@
+.create-room-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: linear-gradient(to bottom, #243b55, #141e30);
+    color: white;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .title {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #ff0099;
+    text-shadow: 2px 2px #000;
+  }
+  
+  .create-room-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .create-room-form label {
+    font-size: 1.2rem;
+  }
+  
+  .create-room-form input,
+  .create-room-form select {
+    padding: 10px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+  }
+  
+  .create-room-button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    background-color: #ff0099;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 4px #c60072;
+    transition: all 0.3s ease;
+  }
+  
+  .create-room-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px #c60072;
+  }
+  
+  .create-room-button:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px #c60072;
+  }
+  
+  .message {
+    margin-top: 15px;
+    font-size: 1rem;
+    color: yellow;
+    text-align: center;
+  }
