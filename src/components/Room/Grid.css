@@ -1,0 +1,55 @@
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* Adjust for grid size */
+    gap: 5px;
+    padding: 20px;
+    background-color: #333; /* Dark background for grid */
+    border: 3px solid black;
+    border-radius: 10px;
+    box-shadow: 4px 4px #000;
+  }
+  
+  .grid-row {
+    display: contents; /* Allows proper row/column rendering */
+  }
+  
+  .grid-cell {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f9d342; /* Default visible color */
+    border: 2px solid black;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+  }
+  
+  .grid-cell.hidden {
+    background-color: #222; /* Hidden state for non-revealed tiles */
+    cursor: default;
+  }
+  
+  .grid-cell.red {
+    background-color: #d1345b; /* Red team color */
+  }
+  
+  .grid-cell.blue {
+    background-color: #134fd1; /* Blue team color */
+  }
+  
+  .grid-cell.grey {
+    background-color: #6f9d44; /* Neutral tile color */
+  }
+  
+  .grid-cell:hover {
+    transform: scale(1.05); /* Slight zoom effect */
+  }
+
+  .grid-cell.revealed-hidden-text {
+    color: transparent; /* Hide text completely */
+    text-shadow: none; /* Remove text shadow */
+  }
+  

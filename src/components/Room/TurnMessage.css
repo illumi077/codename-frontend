@@ -1,0 +1,16 @@
+.turn-message-container {
+    padding: 15px;
+    background-color: #333;
+    color: #fff;
+    border: 3px solid black;
+    border-radius: 10px;
+    font-family: 'Press Start 2P', cursive;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .turn-message-container h3 {
+    font-size: 1.2rem;
+    margin: 0;
+  }
+  

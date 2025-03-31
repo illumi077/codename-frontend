@@ -1,0 +1,29 @@
+.player-list-container {
+    padding: 10px;
+    background-color: #333;
+    color: white;
+    border: 3px solid black;
+    border-radius: 10px;
+    font-family: 'Press Start 2P', cursive;
+  }
+  
+  .player-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .player-item {
+    margin: 5px 0;
+    padding: 5px;
+    border: 2px solid black;
+    border-radius: 5px;
+  }
+  
+  .player-item.red {
+    background-color: #d1345b; /* Red team color */
+  }
+  
+  .player-item.blue {
+    background-color: #134fd1; /* Blue team color */
+  }
+  

@@ -1,10 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import { GameProvider } from './context/GameContext'; // Import GameContext provider
+import './styles/global.css'; // Retro global styling
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
+ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <App />
+    <GameProvider> {/* Context wrapper */}
+      <App />
+    </GameProvider>
   </React.StrictMode>
 );

@@ -1,21 +1,28 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Home from '../components/Home';
-import CreateRoom from '../components/CreateRoom';
-import JoinRoom from '../components/JoinRoom';
-import Room from '../components/Room'; // Import the Room component
+import HomeScreen from './components/HomeScreen/Homescreen.jsx';
+import CreateRoom from './components/CreateRoom/CreateRoom';
+import JoinRoom from './components/JoinRoom/JoinRoom';
+import Room from './components/Room/Room';
 
-function App() {
+const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} />
+        {/* Home Screen */}
+        <Route path="/" element={<HomeScreen />} />
+
+        {/* Create Room */}
         <Route path="/create-room" element={<CreateRoom />} />
+
+        {/* Join Room */}
         <Route path="/join-room" element={<JoinRoom />} />
-        <Route path="/room/:roomCode" element={<Room />} /> {/* Add this route */}
+
+        {/* Room */}
+        <Route path="/room/:roomCode" element={<Room />} />
       </Routes>
     </Router>
   );
-}
+};
 
 export default App;
