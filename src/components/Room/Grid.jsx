@@ -1,49 +1,73 @@
 import React, { useState, useEffect } from 'react';
-import { useGameContext } from '../../context/GameContext'; // Access global state
-import { useSocket } from '../../hooks/useSocket'; // Real-time communication
-import './Grid.css'; // Retro styles
+import { useGameContext } from '../../hooks/useGameContext';
+import { useSocket } from '../../hooks/useSocket';
+import './Grid.css';
 
-const Grid = ({ gridState, currentTurn, setCurrentTurn, onGameEnd, roomCode }) => {
-  const { role, team } = useGameContext(); // Get the user's role and team
-  const socket = useSocket(); // Access the WebSocket instance
-  const [localGridState, setLocalGridState] = useState(gridState); // Local state for grid
+const Grid = ({ gridState = [[]], currentTurn, setCurrentTurn, onGameEnd, roomCode }) => {
+  const { role, team } = useGameContext();
+  const { socket, isSocketReady } = useSocket();
+  const [localGridState, setLocalGridState] = useState(gridState);
 
   useEffect(() => {
+    console.log('Initial gridState:', gridState); // Debugging log for gridState
+    console.log('Local gridState:', localGridState);
+
+    if (!isSocketReady || !socket) {
+      console.warn('Socket is not ready yet for grid updates.');
+      return;
+    }
+
+    console.log('Setting up socket listener for grid updates.');
+
     // Listen for grid updates from the server
     socket.on('gridUpdated', (updatedGrid) => {
-      setLocalGridState(updatedGrid); // Sync grid state from server
+      console.log('Received gridUpdated event:', updatedGrid);
+      if (Array.isArray(updatedGrid) && updatedGrid.length) {
+        setLocalGridState(updatedGrid); // Update grid state if valid
+      } else {
+        console.error('Invalid gridUpdated data received:', updatedGrid);
+      }
     });
 
     return () => {
-      socket.off('gridUpdated'); // Clean up socket listener
+      if (socket) {
+        socket.off('gridUpdated');
+      }
     };
-  }, [socket]);
+  }, [socket, isSocketReady, gridState, localGridState]);
+
+  if (!localGridState.length || !Array.isArray(localGridState[0])) {
+    return <p className="error-message">Grid data is unavailable or invalid.</p>;
+  }
 
   const handleCellClick = (row, col) => {
-    // Prevent Spymasters or Agents not in turn from interacting
     if (role !== 'Agent' || currentTurn !== team) return;
 
-    const tile = localGridState[row][col]; // Get the tile details
+    const tile = localGridState[row]?.[col];
+    if (!tile || tile.revealed) return;
 
-    if (tile.revealed) return; // Prevent interacting with already revealed tiles
-
-    const updatedGrid = [...localGridState];
-    updatedGrid[row][col].revealed = true; // Mark tile as revealed
+    const updatedGrid = localGridState.map((r, rowIndex) =>
+      rowIndex === row
+        ? r.map((cell, colIndex) =>
+            colIndex === col ? { ...cell, revealed: true } : cell
+          )
+        : r
+    );
 
     setLocalGridState(updatedGrid);
 
-    // Emit the tile interaction event to the server
-    socket.emit('tileClicked', { row, col, roomCode, team });
+    if (isSocketReady && socket) {
+      console.log('Emitting tileClicked event to server:', { row, col, roomCode, team });
+      socket.emit('tileClicked', { row, col, roomCode, team });
+    }
 
-    // Game-ending condition: black tile clicked
     if (tile.color === 'black') {
       onGameEnd(`${team === 'Red' ? 'Blue' : 'Red'} wins!`);
       return;
     }
 
-    // Turn logic: Wrong tile clicked
     if (tile.color === 'grey' || tile.color !== team) {
-      setCurrentTurn(currentTurn === 'Red' ? 'Blue' : 'Red'); // Switch turn to the opposite team
+      setCurrentTurn(currentTurn === 'Red' ? 'Blue' : 'Red');
     }
   };
 

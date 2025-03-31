@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useGameContext } from '../../context/GameContext'; // Import GameContext
+import { useGameContext } from '../../hooks/useGameContext'; // Updated import for useGameContext
 import './JoinRoom.css'; // Retro styles
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 

@@ -1,41 +1,45 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useGameContext } from '../../context/GameContext';
-import { useSocket } from '../../hooks/useSocket';
-import { fetchRoomData, leaveRoom } from '../../utils/api'; // Import API utilities
-import './Room.css';
-import Grid from './Grid';
-import PlayerList from './PlayerList';
-import TimerDisplay from './TimerDisplay';
-import StartGameButton from './StartGameButton';
-import EndTurnButton from './EndTurnButton';
-import TurnMessage from './TurnMessage';
-import ActionButtons from './ActionButtons'; // Added ActionButtons import
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useGameContext } from "../../hooks/useGameContext";
+import { useSocket } from "../../hooks/useSocket";
+import { fetchRoomData, leaveRoom } from "../../utils/api";
+import "./Room.css";
+import Grid from "./Grid";
+import PlayerList from "./PlayerList";
+import TimerDisplay from "./TimerDisplay";
+import StartGameButton from "./StartGameButton";
+import EndTurnButton from "./EndTurnButton";
+import TurnMessage from "./TurnMessage";
 
 const Room = () => {
   const { roomCode } = useParams();
   const navigate = useNavigate();
   const { username, role, team } = useGameContext();
+  const { socket, isSocketReady } = useSocket(); // Modified to include readiness check
   const [roomData, setRoomData] = useState(null);
   const [currentTurn, setCurrentTurn] = useState(null);
   const [gameStarted, setGameStarted] = useState(false);
-  const [error, setError] = useState('');
-  const [gameStatus, setGameStatus] = useState('');
-  const socket = useSocket();
+  const [error, setError] = useState("");
+  const [gameStatus, setGameStatus] = useState("");
 
   useEffect(() => {
     if (!username) {
-      navigate('/'); // Redirect if username is missing
+      navigate("/"); // Redirect if username is missing
       return;
     }
 
     const fetchRoom = async () => {
       try {
-        const data = await fetchRoomData(roomCode); // Use fetchRoomData from api.js
+        const data = await fetchRoomData(roomCode);
         setRoomData(data);
 
-        // Join the room via WebSocket
-        socket.emit('joinRoom', { roomCode, username });
+        // Ensure socket is ready before emitting events
+        if (isSocketReady && socket) {
+          console.log("Socket is ready, joining room...");
+          socket.emit("joinRoom", { roomCode, username });
+        } else {
+          console.error("Socket is not initialized or ready");
+        }
       } catch (err) {
         setError(`Failed to fetch room data: ${err.message}`);
       }
@@ -45,58 +49,81 @@ const Room = () => {
 
     // Clean up socket connection when leaving the room
     return () => {
-      socket.emit('leaveRoom', { roomCode, username });
-      socket.disconnect();
+      if (isSocketReady && socket) {
+        socket.emit("leaveRoom", { roomCode, username });
+        socket.disconnect();
+      }
     };
-  }, [roomCode, username, navigate, socket]);
+  }, [roomCode, username, navigate, socket, isSocketReady]);
 
   useEffect(() => {
-    socket.on('roomDataUpdated', (updatedRoomData) => {
+    if (!isSocketReady || !socket) {
+      console.error("Socket is not initialized yet.");
+      return;
+    }
+
+    console.log("Socket is ready. Setting up listeners...");
+
+    socket.on("roomDataUpdated", (updatedRoomData) => {
       setRoomData(updatedRoomData);
     });
 
-    socket.on('turnUpdated', (updatedTurn) => {
+    socket.on("turnUpdated", (updatedTurn) => {
       setCurrentTurn(updatedTurn);
     });
 
-    socket.on('gameEnded', (status) => {
+    socket.on("gameEnded", (status) => {
       setGameStatus(status);
     });
 
-    socket.on('error', (message) => {
+    socket.on("error", (message) => {
       setError(message);
     });
 
     return () => {
-      socket.off('roomDataUpdated');
-      socket.off('turnUpdated');
-      socket.off('gameEnded');
-      socket.off('error');
+      if (socket) {
+        socket.off("roomDataUpdated");
+        socket.off("turnUpdated");
+        socket.off("gameEnded");
+        socket.off("error");
+      }
     };
-  }, [socket]);
+  }, [socket, isSocketReady]);
 
   const handleStartGame = () => {
     setGameStarted(true);
-    setCurrentTurn('Red');
-    socket.emit('gameStarted', { roomCode, currentTurn: 'Red' });
+    setCurrentTurn("Red");
+    if (isSocketReady && socket) {
+      socket.emit("gameStarted", { roomCode, currentTurn: "Red" });
+    } else {
+      console.error("Socket is not initialized");
+    }
   };
 
   const handleEndTurn = () => {
-    const nextTurn = currentTurn === 'Red' ? 'Blue' : 'Red';
+    const nextTurn = currentTurn === "Red" ? "Blue" : "Red";
     setCurrentTurn(nextTurn);
-    socket.emit('turnEnded', { roomCode, nextTurn });
+    if (isSocketReady && socket) {
+      socket.emit("turnEnded", { roomCode, nextTurn });
+    } else {
+      console.error("Socket is not initialized");
+    }
   };
 
   const handleTimeEnd = () => {
-    const nextTurn = currentTurn === 'Red' ? 'Blue' : 'Red';
+    const nextTurn = currentTurn === "Red" ? "Blue" : "Red";
     setCurrentTurn(nextTurn);
-    socket.emit('turnEnded', { roomCode, nextTurn });
+    if (isSocketReady && socket) {
+      socket.emit("turnEnded", { roomCode, nextTurn });
+    } else {
+      console.error("Socket is not initialized");
+    }
   };
 
   const leaveCurrentRoom = async () => {
     try {
-      await leaveRoom(roomCode, username); // Use leaveRoom from api.js
-      navigate('/'); // Redirect to home
+      await leaveRoom(roomCode, username);
+      navigate("/"); // Redirect to home
     } catch (err) {
       setError(`Failed to leave the room: ${err.message}`);
     }
@@ -144,23 +171,31 @@ const Room = () => {
       {gameStarted ? (
         <>
           <TurnMessage currentTurn={currentTurn} team={team} />
-          <TimerDisplay duration={60} currentTurn={currentTurn} onTimeEnd={handleTimeEnd} />
-          <EndTurnButton currentTurn={currentTurn} team={team} onEndTurn={handleEndTurn} />
-          <Grid
-            gridState={roomData.gridState}
+          <TimerDisplay
+            duration={60}
             currentTurn={currentTurn}
-            setCurrentTurn={setCurrentTurn}
-            onGameEnd={handleGameEnd}
-            roomCode={roomCode}
+            onTimeEnd={handleTimeEnd}
           />
+          <EndTurnButton
+            currentTurn={currentTurn}
+            team={team}
+            onEndTurn={handleEndTurn}
+          />
+          {isSocketReady && (
+            <Grid
+              gridState={roomData?.gridState || [[]]}
+              currentTurn={currentTurn}
+              setCurrentTurn={setCurrentTurn}
+              onGameEnd={handleGameEnd}
+              roomCode={roomCode}
+            />
+          )}
         </>
       ) : (
         <StartGameButton onStartGame={handleStartGame} />
       )}
 
       <PlayerList players={roomData.players} />
-
-      <ActionButtons onLeave={leaveCurrentRoom} /> {/* Updated for API utility */}
     </div>
   );
 };

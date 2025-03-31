@@ -1,7 +1,11 @@
 export default {
   server: {
     proxy: {
-      '/api': 'https://your-backend-url.onrender.com', // Proxy API calls to your backend
+      '/socket.io': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+        ws: true, // Enable WebSocket proxying
+      },
     },
   },
 };

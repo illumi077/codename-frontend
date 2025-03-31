@@ -1,9 +1,9 @@
 import React, { createContext, useState } from 'react';
 
-// Create GameContext
+// Create the GameContext
 const GameContext = createContext();
 
-// GameContext Provider component
+// GameContext Provider Component
 export const GameProvider = ({ children }) => {
   const [username, setUsername] = useState('');
   const [roomCode, setRoomCode] = useState('');
@@ -28,4 +28,4 @@ export const GameProvider = ({ children }) => {
   );
 };
 
-export default GameContext; // Export the context itself
+export default GameContext;

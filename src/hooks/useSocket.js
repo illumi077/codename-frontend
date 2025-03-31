@@ -1,24 +1,45 @@
-import { useEffect, useRef } from 'react';
-import { io } from 'socket.io-client';
+import { useEffect, useRef, useState } from "react";
+import { io } from "socket.io-client";
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL; // Use environment variable for backend URL
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 export const useSocket = () => {
-  const socket = useRef(null); // Use `useRef` to persist the socket instance across re-renders
+  const socket = useRef(null);
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    // Initialize the socket connection
-    socket.current = io(BACKEND_URL, {
-      withCredentials: true,
-    });
+    if (!socket.current) {
+      console.log(`Connecting to socket server at: ${BACKEND_URL}`);
+      socket.current = io(BACKEND_URL, {
+        withCredentials: true,
+        transports: ["websocket"],
+        reconnectionAttempts: 5,
+      });
 
-    // Cleanup the socket connection on unmount
+      socket.current.on("connect", () => {
+        console.log(`Socket successfully connected: ${socket.current.id}`);
+        setIsReady(true);
+      });
+
+      socket.current.on("disconnect", (reason) => {
+        console.warn(`Socket disconnected: ${reason}`);
+        setIsReady(false);
+      });
+
+      socket.current.on("connect_error", (err) => {
+        console.error(`Socket connection error: ${err.message}`);
+      });
+    }
+
     return () => {
       if (socket.current) {
+        console.log(`Disconnecting socket: ${socket.current.id}`);
         socket.current.disconnect();
+        socket.current = null;
+        setIsReady(false);
       }
     };
   }, []);
 
-  return socket.current; // Return the socket instance for use in components
+  return { socket: socket.current, isSocketReady: isReady };
 };
